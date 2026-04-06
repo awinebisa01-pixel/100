@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Coins - Recharge</title>
+    <title>Get Coins - Recharge Channel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -12,15 +12,37 @@
         .tiktok-red-hover:hover { background-color: #e62548; }
         .tiktok-red-text { color: #FE2C55; }
         .tiktok-red-border { border-color: #FE2C55; }
+        .coin-gradient { background: linear-gradient(135deg, #F7D100 0%, #F7B500 100%); }
     </style>
 </head>
 <body class="bg-white">
-    <div class="min-h-screen max-w-md mx-auto pb-32">
+    <div class="min-h-screen max-w-md mx-auto pb-36 relative">
+        <!-- Live Overlay Card - matches your screenshot bottom right -->
+        <div id="liveOverlay" class="fixed bottom-40 right-4 z-40 bg-[#1C1C1E] rounded-xl p-2 w-40 shadow-2xl">
+            <div class="flex items-center gap-1 mb-2">
+                <div class="w-4 h-4 rounded-full bg-[#25F4EE] flex items-center justify-center">
+                    <div class="w-2 h-2 rounded-full bg-white"></div>
+                </div>
+                <span class="text-white text-xs font-semibold" id="liveBalance">42</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <img src="https://i.pravatar.cc/100?img=12" class="w-14 h-14 rounded-full border-2 border-white mb-1" alt="creator">
+                <p class="text-white text-xs font-semibold truncate w-full text-center">Akron Sult...</p>
+                <div class="flex items-center gap-2 mt-1">
+                    <button class="bg-[#FE2C55] text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">+</button>
+                    <i data-lucide="bell-off" class="w-4 h-4 text-white"></i>
+                </div>
+            </div>
+        </div>
+
         <!-- Header -->
         <div class="flex items-center justify-between p-4 border-b border-gray-100">
-            <div class="w-6"></div>
+            <i data-lucide="chevron-left" class="w-6 h-6"></i>
             <h1 class="text-lg font-semibold text-[#161823]">Get Coins</h1>
-            <div class="w-6"></div>
+            <div class="flex items-center gap-3">
+                <i data-lucide="more-horizontal" class="w-6 h-6"></i>
+                <i data-lucide="help-circle" class="w-6 h-6"></i>
+            </div>
         </div>
 
         <div class="p-4 space-y-6">
@@ -33,19 +55,22 @@
             <!-- Recharge Banner -->
             <div>
                 <p class="text-base font-semibold text-[#161823] mb-1">Recharge</p>
-                <p class="text-sm tiktok-red-text">Save around 25% with a lower third-party service fee.</p>
+                <div class="flex items-center gap-1">
+                    <p class="text-sm tiktok-red-text">Save around 25% with a lower third-party service fee.</p>
+                    <i data-lucide="help-circle" class="w-4 h-4 text-[#8A8A8E]"></i>
+                </div>
             </div>
 
             <!-- Coin Grid -->
-            <div class="grid grid-cols-3 gap-3" id="coinGrid">
-                <!-- Bundles injected by JS -->
-            </div>
+            <div class="grid grid-cols-3 gap-3" id="coinGrid"></div>
 
             <!-- Custom Input Display -->
             <div id="customDisplay" class="hidden">
                 <button onclick="openKeypad()" class="w-full bg-[#F1F1F2] rounded-xl p-3 text-left">
                     <div class="flex items-center gap-1">
-                        <img src="https://cdn-icons-png.flaticon.com/512/272/272535.png" class="w-5 h-5" alt="coin"/>
+                        <div class="w-5 h-5 rounded-full coin-gradient flex items-center justify-center">
+                            <span class="text-[10px] font-bold text-white">T</span>
+                        </div>
                         <span class="font-bold text-lg text-[#161823]" id="customCoinsText">100</span>
                     </div>
                     <p class="text-sm text-[#8A8A8E] mt-1">≈ $<span id="customPriceText">1.04</span></p>
@@ -54,21 +79,37 @@
 
             <!-- Upsell Cards -->
             <div class="space-y-3 pt-2">
-                <div class="flex items-center gap-3 bg-[#F8F8F8] rounded-xl p-4">
-                    <i data-lucide="users" class="tiktok-red-text w-6 h-6 flex-shrink-0"></i>
+                <div class="flex items-center gap-3 bg-[#F8F8F8] rounded-xl p-4 cursor-pointer">
+                    <div class="text-2xl">🙌</div>
                     <div class="flex-1">
                         <p class="font-semibold text-base text-[#161823]">Invite & Get Rewards</p>
                         <p class="text-sm text-[#8A8A8E]">Check out this new feature!</p>
                     </div>
                     <i data-lucide="chevron-right" class="text-[#8A8A8E] w-5 h-5"></i>
                 </div>
-                <div class="flex items-center gap-3 bg-[#F8F8F8] rounded-xl p-4">
-                    <i data-lucide="smartphone" class="text-[#25F4EE] w-6 h-6 flex-shrink-0"></i>
+                <div class="flex items-center gap-3 bg-[#F8F8F8] rounded-xl p-4 cursor-pointer">
+                    <div class="bg-white rounded-lg p-1">
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="#161823"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
+                    </div>
                     <div class="flex-1">
-                        <p class="font-semibold text-base text-[#161823]">Add this page to the mobile desktop</p>
-                        <p class="text-sm text-[#8A8A8E]">Easy access with just one click</p>
+                        <p class="font-semibold text-base text-[#161823]">Add this page to the mobile desktop for easy access with just one click</p>
                     </div>
                     <i data-lucide="chevron-right" class="text-[#8A8A8E] w-5 h-5"></i>
+                </div>
+            </div>
+
+            <!-- Special Offer Section -->
+            <div class="pt-2">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-sm text-[#8A8A8E]">Special offer</p>
+                    <button id="requestBtn" class="bg-[#8A8A8E] text-white text-sm font-semibold px-6 py-2 rounded-lg">Request</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" class="h-4" alt="visa"/>
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5dfa882b4fdc2.svg" class="h-4" alt="mc"/>
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/amex-a49b82f46c5cd6a96a6e418a6ca1717c.svg" class="h-4" alt="amex"/>
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/discover-ac52c4b1c44c44c8a1e856733d363ff9.svg" class="h-4" alt="discover"/>
+                    <img src="https://js.stripe.com/v3/fingerprinted/img/jcb-2714b6b0b59e0c3c8a1e856733d363ff9.svg" class="h-4" alt="jcb"/>
                 </div>
             </div>
         </div>
@@ -82,7 +123,9 @@
                 </div>
                 <div class="text-center mb-4">
                     <div class="flex items-center justify-center gap-2">
-                        <img src="https://cdn-icons-png.flaticon.com/512/272/272535.png" class="w-7 h-7" alt="coin"/>
+                        <div class="w-7 h-7 rounded-full coin-gradient flex items-center justify-center">
+                            <span class="text-xs font-bold text-white">T</span>
+                        </div>
                         <span class="text-3xl font-bold" id="keypadCoins">100</span>
                     </div>
                     <p class="text-base text-[#8A8A8E]">$<span id="keypadPrice">1.04</span></p>
@@ -107,10 +150,6 @@
 
         <!-- Footer -->
         <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 p-4">
-            <div class="flex items-center justify-center gap-2 mb-3">
-                <img src="https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" class="h-4" alt="visa"/>
-                <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5dfa882b4fdc2.svg" class="h-4" alt="mc"/>
-            </div>
             <button id="buyBtn" onclick="handlePurchase()" class="w-full tiktok-red tiktok-red-hover disabled:bg-gray-300 text-white font-bold text-base rounded-lg py-3 flex items-center justify-center gap-2">
                 <i data-lucide="shield" class="w-5 h-5"></i>
                 <span id="buyBtnText">Buy for $3.65</span>
@@ -119,16 +158,16 @@
     </div>
 
 <script>
-    // ===== CONFIG: Replace these with your Stripe Payment Links =====
-    const STRIPE_LINKS = {
+    // ===== CONFIG: Replace these with your Stripe/Paystack Payment Links =====
+    const PAYMENT_LINKS = {
         30: 'https://buy.stripe.com/test_xxx',
         350: 'https://buy.stripe.com/test_yyy',
         700: 'https://buy.stripe.com/test_zzz',
         1400: 'https://buy.stripe.com/test_aaa',
         3500: 'https://buy.stripe.com/test_bbb',
-        custom: 'https://buy.stripe.com/test_ccc' // Use Stripe's adjustable quantity link
+        custom: 'https://buy.stripe.com/test_ccc' // Enable "adjustable quantity" in Stripe
     };
-    // ================================================================
+    // =========================================================================
 
     const COIN_BUNDLES = [
         { id: '1', coins: 30, price: 0.31 },
@@ -141,91 +180,4 @@
     let selectedBundle = COIN_BUNDLES[1];
     let isCustom = false;
     let customCoins = 100;
-
-    function renderGrid() {
-        const grid = document.getElementById('coinGrid');
-        grid.innerHTML = '';
-        
-        COIN_BUNDLES.forEach(bundle => {
-            const selected = !isCustom && selectedBundle.id === bundle.id;
-            grid.innerHTML += `
-                <button onclick="selectBundle('${bundle.id}')" class="rounded-xl p-3 border-2 ${selected ? 'tiktok-red-border bg-white' : 'border-transparent bg-[#F8F8F8]'}">
-                    <div class="flex items-center justify-center gap-1">
-                        <img src="https://cdn-icons-png.flaticon.com/512/272/272535.png" class="w-4 h-4" alt="coin"/>
-                        <span class="font-bold text-base text-[#161823]">${bundle.coins}</span>
-                    </div>
-                    <p class="text-sm text-[#8A8A8E] mt-1">$${bundle.price}</p>
-                </button>
-            `;
-        });
-        
-        grid.innerHTML += `
-            <button onclick="selectCustom()" class="rounded-xl p-3 border-2 flex items-center justify-center ${isCustom ? 'tiktok-red-border bg-white' : 'border-transparent bg-[#F8F8F8]'}">
-                <span class="font-semibold text-base text-[#161823]">Custom</span>
-            </button>
-        `;
-        updateBuyButton();
-        lucide.createIcons();
-    }
-
-    function selectBundle(id) {
-        selectedBundle = COIN_BUNDLES.find(b => b.id === id);
-        isCustom = false;
-        document.getElementById('customDisplay').classList.add('hidden');
-        renderGrid();
-    }
-
-    function selectCustom() {
-        isCustom = true;
-        document.getElementById('customDisplay').classList.remove('hidden');
-        openKeypad();
-        renderGrid();
-    }
-
-    function openKeypad() {
-        document.getElementById('keypadModal').classList.remove('hidden');
-        document.getElementById('keypadModal').classList.add('flex');
-        updateKeypadDisplay();
-    }
-
-    function closeKeypad() {
-        document.getElementById('keypadModal').classList.add('hidden');
-        document.getElementById('keypadModal').classList.remove('flex');
-        updateCustomDisplay();
-        updateBuyButton();
-    }
-
-    function keypadInput(val) {
-        if (val === 'del') customCoins = Math.floor(customCoins / 10);
-        else if (val === 'clear') customCoins = 0;
-        else customCoins = Number(String(customCoins) + val);
-        updateKeypadDisplay();
-    }
-
-    function updateKeypadDisplay() {
-        document.getElementById('keypadCoins').textContent = customCoins || 0;
-        document.getElementById('keypadPrice').textContent = (customCoins * 0.0104).toFixed(2);
-    }
-
-    function updateCustomDisplay() {
-        document.getElementById('customCoinsText').textContent = customCoins || 0;
-        document.getElementById('customPriceText').textContent = (customCoins * 0.0104).toFixed(2);
-    }
-
-    function updateBuyButton() {
-        const price = isCustom ? (customCoins * 0.0104).toFixed(2) : selectedBundle.price;
-        const coins = isCustom ? customCoins : selectedBundle.coins;
-        document.getElementById('buyBtnText').textContent = `Buy for $${price}`;
-        document.getElementById('buyBtn').disabled = coins < 30;
-    }
-
-    function handlePurchase() {
-        const coins = isCustom ? customCoins : selectedBundle.coins;
-        const link = isCustom ? STRIPE_LINKS.custom : STRIPE_LINKS[coins];
-        const recipient = document.getElementById('recipient').value || '@self';
-        
-        if (!link || link.includes('xxx')) {
-            alert('Replace STRIPE_LINKS in the code with your real Stripe Payment Links from dashboard.stripe.com/payment-links');
-            return;
-        }
-        // Add recipient to
+    let userBalance = 42; // Current
