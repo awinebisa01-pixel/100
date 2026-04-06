@@ -2,182 +2,185 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Coins - Recharge Channel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TikTok Recharge</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        .tiktok-red { background-color: #FE2C55; }
-        .tiktok-red-hover:hover { background-color: #e62548; }
-        .tiktok-red-text { color: #FE2C55; }
-        .tiktok-red-border { border-color: #FE2C55; }
-        .coin-gradient { background: linear-gradient(135deg, #F7D100 0%, #F7B500 100%); }
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .custom-shadow { shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05); }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .animate-slide-up { animation: slideUp 0.3s ease-out; }
     </style>
 </head>
-<body class="bg-white">
-    <div class="min-h-screen max-w-md mx-auto pb-36 relative">
-        <!-- Live Overlay Card - matches your screenshot bottom right -->
-        <div id="liveOverlay" class="fixed bottom-40 right-4 z-40 bg-[#1C1C1E] rounded-xl p-2 w-40 shadow-2xl">
-            <div class="flex items-center gap-1 mb-2">
-                <div class="w-4 h-4 rounded-full bg-[#25F4EE] flex items-center justify-center">
-                    <div class="w-2 h-2 rounded-full bg-white"></div>
-                </div>
-                <span class="text-white text-xs font-semibold" id="liveBalance">42</span>
-            </div>
-            <div class="flex flex-col items-center">
-                <img src="https://i.pravatar.cc/100?img=12" class="w-14 h-14 rounded-full border-2 border-white mb-1" alt="creator">
-                <p class="text-white text-xs font-semibold truncate w-full text-center">Akron Sult...</p>
-                <div class="flex items-center gap-2 mt-1">
-                    <button class="bg-[#FE2C55] text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">+</button>
-                    <i data-lucide="bell-off" class="w-4 h-4 text-white"></i>
-                </div>
-            </div>
-        </div>
+<body class="bg-[#F8F8F8]">
+    <div id="root"></div>
 
-        <!-- Header -->
-        <div class="flex items-center justify-between p-4 border-b border-gray-100">
-            <i data-lucide="chevron-left" class="w-6 h-6"></i>
-            <h1 class="text-lg font-semibold text-[#161823]">Get Coins</h1>
-            <div class="flex items-center gap-3">
-                <i data-lucide="more-horizontal" class="w-6 h-6"></i>
-                <i data-lucide="help-circle" class="w-6 h-6"></i>
-            </div>
-        </div>
+    <script type="text/babel">
+        const { useState } = React;
 
-        <div class="p-4 space-y-6">
-            <!-- Username Input -->
-            <div class="flex items-center gap-3 bg-[#F1F1F2] rounded-xl p-3">
-                <svg class="w-6 h-6" viewBox="0 0 48 48" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 4C12.96 4 4 12.96 4 24s8.96 20 20 20 20-8.96 20-20S35.04 4 24 4zm0 6c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 28c-4.41 0-8.31-2.27-10.57-5.71 3.78-3.78 8.89-5.29 14.57-5.29s10.79 1.51 14.57 5.29C32.31 35.73 28.41 38 24 38z" fill="#161823"/></svg>
-                <input type="text" id="recipient" placeholder="Enter username" class="bg-transparent outline-none text-base text-[#161823] placeholder:text-[#8A8A8E] w-full">
-            </div>
+        const App = () => {
+            const [selected, setSelected] = useState(30);
+            const [customAmount, setCustomAmount] = useState('');
+            const [showModal, setShowModal] = useState(false);
+            const [username, setUsername] = useState('');
 
-            <!-- Recharge Banner -->
-            <div>
-                <p class="text-base font-semibold text-[#161823] mb-1">Recharge</p>
-                <div class="flex items-center gap-1">
-                    <p class="text-sm tiktok-red-text">Save around 25% with a lower third-party service fee.</p>
-                    <i data-lucide="help-circle" class="w-4 h-4 text-[#8A8A8E]"></i>
-                </div>
-            </div>
+            const packages = [
+                { coins: 30, price: 0.31 },
+                { coins: 350, price: 3.65 },
+                { coins: 700, price: 7.25 },
+                { coins: 1400, price: 14.49 },
+                { coins: 3500, price: 36.20 }
+            ];
 
-            <!-- Coin Grid -->
-            <div class="grid grid-cols-3 gap-3" id="coinGrid"></div>
+            const currentPrice = () => {
+                if (typeof selected === 'number') {
+                    return packages.find(p => p.coins === selected)?.price || '0.00';
+                }
+                return (selected * 0.0103).toFixed(2);
+            };
 
-            <!-- Custom Input Display -->
-            <div id="customDisplay" class="hidden">
-                <button onclick="openKeypad()" class="w-full bg-[#F1F1F2] rounded-xl p-3 text-left">
-                    <div class="flex items-center gap-1">
-                        <div class="w-5 h-5 rounded-full coin-gradient flex items-center justify-center">
-                            <span class="text-[10px] font-bold text-white">T</span>
+            return (
+                <div className="max-w-[450px] mx-auto min-h-screen relative flex flex-col bg-[#F8F8F8]">
+                    {/* Header */}
+                    <div className="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+                        <span className="text-2xl">✕</span>
+                        <h1 className="font-bold text-[17px]">Get Coins</h1>
+                        <div className="flex gap-4 text-xl">
+                            <span>⋯</span>
+                            <span>👤</span>
                         </div>
-                        <span class="font-bold text-lg text-[#161823]" id="customCoinsText">100</span>
                     </div>
-                    <p class="text-sm text-[#8A8A8E] mt-1">≈ $<span id="customPriceText">1.04</span></p>
-                </button>
-            </div>
 
-            <!-- Upsell Cards -->
-            <div class="space-y-3 pt-2">
-                <div class="flex items-center gap-3 bg-[#F8F8F8] rounded-xl p-4 cursor-pointer">
-                    <div class="text-2xl">🙌</div>
-                    <div class="flex-1">
-                        <p class="font-semibold text-base text-[#161823]">Invite & Get Rewards</p>
-                        <p class="text-sm text-[#8A8A8E]">Check out this new feature!</p>
-                    </div>
-                    <i data-lucide="chevron-right" class="text-[#8A8A8E] w-5 h-5"></i>
-                </div>
-                <div class="flex items-center gap-3 bg-[#F8F8F8] rounded-xl p-4 cursor-pointer">
-                    <div class="bg-white rounded-lg p-1">
-                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="#161823"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>
-                    </div>
-                    <div class="flex-1">
-                        <p class="font-semibold text-base text-[#161823]">Add this page to the mobile desktop for easy access with just one click</p>
-                    </div>
-                    <i data-lucide="chevron-right" class="text-[#8A8A8E] w-5 h-5"></i>
-                </div>
-            </div>
-
-            <!-- Special Offer Section -->
-            <div class="pt-2">
-                <div class="flex items-center justify-between mb-3">
-                    <p class="text-sm text-[#8A8A8E]">Special offer</p>
-                    <button id="requestBtn" class="bg-[#8A8A8E] text-white text-sm font-semibold px-6 py-2 rounded-lg">Request</button>
-                </div>
-                <div class="flex items-center gap-2">
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/visa-729c05c240c4bdb47b03ac81d9945bfe.svg" class="h-4" alt="visa"/>
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/mastercard-4d8844094130711885b5dfa882b4fdc2.svg" class="h-4" alt="mc"/>
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/amex-a49b82f46c5cd6a96a6e418a6ca1717c.svg" class="h-4" alt="amex"/>
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/discover-ac52c4b1c44c44c8a1e856733d363ff9.svg" class="h-4" alt="discover"/>
-                    <img src="https://js.stripe.com/v3/fingerprinted/img/jcb-2714b6b0b59e0c3c8a1e856733d363ff9.svg" class="h-4" alt="jcb"/>
-                </div>
-            </div>
-        </div>
-
-        <!-- Keypad Modal -->
-        <div id="keypadModal" class="fixed inset-0 bg-black/40 z-50 hidden items-end">
-            <div class="bg-white w-full max-w-md mx-auto rounded-t-2xl p-4">
-                <div class="flex justify-between items-center mb-4">
-                    <p class="font-semibold text-base">Enter amount</p>
-                    <button onclick="closeKeypad()"><i data-lucide="x" class="w-6 h-6"></i></button>
-                </div>
-                <div class="text-center mb-4">
-                    <div class="flex items-center justify-center gap-2">
-                        <div class="w-7 h-7 rounded-full coin-gradient flex items-center justify-center">
-                            <span class="text-xs font-bold text-white">T</span>
+                    {/* Username Box */}
+                    <div className="bg-white p-4 mb-3 flex items-center gap-3">
+                        <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center">
+                            <img src="https://www.edigitalagency.com.au/wp-content/uploads/TikTok-logo-PNG-white-stacked.png" className="w-6" />
                         </div>
-                        <span class="text-3xl font-bold" id="keypadCoins">100</span>
+                        <input 
+                            className="flex-1 text-lg outline-none border-b border-gray-200 pb-1" 
+                            placeholder="Enter username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                        />
                     </div>
-                    <p class="text-base text-[#8A8A8E]">$<span id="keypadPrice">1.04</span></p>
+
+                    {/* Recharge Section */}
+                    <div className="p-4 bg-white flex-1">
+                        <p className="text-gray-500 text-sm font-semibold mb-1">Recharge</p>
+                        <p className="text-[#FE2C55] text-[13px] mb-4">
+                            Save around 25% with a lower third-party service fee. <span className="border border-[#FE2C55] rounded-full px-1 text-[10px]">?</span>
+                        </p>
+
+                        <div className="grid grid-cols-3 gap-3">
+                            {packages.map(p => (
+                                <div 
+                                    key={p.coins}
+                                    onClick={() => setSelected(p.coins)}
+                                    className={`p-3 rounded-lg border-2 flex flex-col items-center justify-center transition-all ${selected === p.coins ? 'border-[#FE2C55] bg-red-50' : 'border-gray-100'}`}
+                                >
+                                    <div className="flex items-center gap-1 font-bold text-lg">
+                                        <span className="text-yellow-400 text-sm">🪙</span> {p.coins}
+                                    </div>
+                                    <div className="text-gray-400 text-xs">${p.price}</div>
+                                </div>
+                            ))}
+                            <div 
+                                onClick={() => setShowModal(true)}
+                                className={`p-3 rounded-lg border-2 flex items-center justify-center font-semibold text-gray-700 ${typeof selected === 'string' ? 'border-[#FE2C55] bg-red-50' : 'border-gray-100'}`}
+                            >
+                                Custom
+                            </div>
+                        </div>
+
+                        {/* Promo Rows */}
+                        <div className="mt-8 space-y-4">
+                            <div className="flex items-center justify-between py-2">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-2xl">👏</span>
+                                    <div>
+                                        <div className="font-bold text-[15px]">Invite & Get Rewards</div>
+                                        <div className="text-gray-400 text-xs">Check out this new feature!</div>
+                                    </div>
+                                </div>
+                                <span className="text-gray-300">❯</span>
+                            </div>
+                            <div className="flex items-center gap-3 py-2">
+                                <div className="w-10 h-10 bg-blue-50 rounded flex items-center justify-center text-blue-500">📱</div>
+                                <div>
+                                    <div className="font-bold text-[15px]">Add this page to the mobile desktop</div>
+                                    <div className="text-gray-400 text-xs">for easy access with just one click</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Floating Overlay (The Akron Card) */}
+                    <div className="fixed bottom-32 right-4 w-44 bg-[#262626] rounded-xl overflow-hidden shadow-2xl border border-white/10">
+                        <div className="bg-[#3D3D3D] text-[10px] text-white font-bold py-1 px-3 flex justify-between items-center">
+                            <span></span>
+                            <span className="bg-gray-500 px-1.5 rounded">Request</span>
+                        </div>
+                        <div className="p-4 flex flex-col items-center">
+                            <div className="relative">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" className="w-14 h-14 rounded-full border border-white/20" />
+                                <div className="absolute -top-1 -left-2 bg-[#48C8E1] text-[9px] font-bold px-1 rounded flex items-center gap-0.5 border border-white/20">
+                                    <span>💎</span> 42
+                                </div>
+                            </div>
+                            <div className="text-white font-bold text-xs mt-2">Akron Sult...</div>
+                        </div>
+                        <div className="flex justify-end p-2 gap-2 text-white/60">
+                            <span className="bg-white/10 p-1 rounded-full text-[10px]">➕</span>
+                            <span className="bg-white/10 p-1 rounded-full text-[10px]">🎙️</span>
+                        </div>
+                    </div>
+
+                    {/* Buy Footer */}
+                    <div className="fixed bottom-0 w-full max-w-[450px] bg-white border-t border-gray-100 p-4">
+                        <div className="flex gap-2 mb-3 opacity-40 grayscale">
+                            <span className="text-xs font-bold border px-1 rounded">VISA</span>
+                            <span className="text-xs font-bold border px-1 rounded">MC</span>
+                        </div>
+                        <button className="w-full bg-[#FE2C55] text-white py-3.5 rounded-md font-bold text-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-transform">
+                            🛡️ Buy for ${currentPrice()}
+                        </button>
+                    </div>
+
+                    {/* Custom Modal */}
+                    {showModal && (
+                        <div className="fixed inset-0 bg-black/60 z-50 flex items-end">
+                            <div className="bg-white w-full rounded-t-2xl p-6 animate-slide-up">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="text-lg font-bold">Custom amount</h2>
+                                    <span onClick={() => setShowModal(false)} className="text-2xl">✕</span>
+                                </div>
+                                <input 
+                                    autoFocus
+                                    type="number" 
+                                    className="w-full bg-gray-100 p-4 rounded-xl text-2xl font-bold mb-6 outline-none border-2 focus:border-[#FE2C55]" 
+                                    placeholder="Min 100"
+                                    value={customAmount}
+                                    onChange={(e) => setCustomAmount(e.target.value)}
+                                />
+                                <button 
+                                    onClick={() => { setSelected(customAmount); setShowModal(false); }}
+                                    className="w-full bg-[#FE2C55] text-white py-4 rounded-xl font-bold text-lg"
+                                >
+                                    Apply
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <button onclick="keypadInput('1')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">1</button>
-                    <button onclick="keypadInput('2')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">2</button>
-                    <button onclick="keypadInput('3')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">3</button>
-                    <button onclick="keypadInput('4')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">4</button>
-                    <button onclick="keypadInput('5')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">5</button>
-                    <button onclick="keypadInput('6')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">6</button>
-                    <button onclick="keypadInput('7')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">7</button>
-                    <button onclick="keypadInput('8')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">8</button>
-                    <button onclick="keypadInput('9')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">9</button>
-                    <button onclick="keypadInput('clear')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">C</button>
-                    <button onclick="keypadInput('0')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">0</button>
-                    <button onclick="keypadInput('del')" class="bg-[#F1F1F2] rounded-xl py-4 text-xl font-semibold active:bg-gray-300">⌫</button>
-                </div>
-                <button onclick="closeKeypad()" class="w-full tiktok-red text-white font-bold rounded-xl py-3 mt-4">Done</button>
-            </div>
-        </div>
+            );
+        };
 
-        <!-- Footer -->
-        <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 p-4">
-            <button id="buyBtn" onclick="handlePurchase()" class="w-full tiktok-red tiktok-red-hover disabled:bg-gray-300 text-white font-bold text-base rounded-lg py-3 flex items-center justify-center gap-2">
-                <i data-lucide="shield" class="w-5 h-5"></i>
-                <span id="buyBtnText">Buy for $3.65</span>
-            </button>
-        </div>
-    </div>
-
-<script>
-    // ===== CONFIG: Replace these with your Stripe/Paystack Payment Links =====
-    const PAYMENT_LINKS = {
-        30: 'https://buy.stripe.com/test_xxx',
-        350: 'https://buy.stripe.com/test_yyy',
-        700: 'https://buy.stripe.com/test_zzz',
-        1400: 'https://buy.stripe.com/test_aaa',
-        3500: 'https://buy.stripe.com/test_bbb',
-        custom: 'https://buy.stripe.com/test_ccc' // Enable "adjustable quantity" in Stripe
-    };
-    // =========================================================================
-
-    const COIN_BUNDLES = [
-        { id: '1', coins: 30, price: 0.31 },
-        { id: '2', coins: 350, price: 3.65 },
-        { id: '3', coins: 700, price: 7.25 },
-        { id: '4', coins: 1400, price: 14.49 },
-        { id: '5', coins: 3500, price: 36.20 },
-    ];
-
-    let selectedBundle = COIN_BUNDLES[1];
-    let isCustom = false;
-    let customCoins = 100;
-    let userBalance = 42; // Current
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
