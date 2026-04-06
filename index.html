@@ -1,165 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TikTok Wallet Ultra</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; background: #000; }
-        .keypad-btn { border-right: 1px solid #f3f4f6; border-bottom: 1px solid #f3f4f6; height: 65px; font-size: 24px; display: flex; align-items: center; justify-content: center; background: white; font-weight: 500; color: #161823; }
-        .keypad-btn:active { background: #f0f2f5; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .animate-slide-up { animation: slideUp 0.3s ease-out forwards; }
-        .coin-icon { width: 18px; height: 18px; object-fit: contain; }
-        .diamond-icon { width: 14px; height: 14px; object-fit: contain; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Coins UI</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
+
+/* Container */
+.app {
+  max-width: 420px;
+  margin: auto;
+  background: #fff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Username */
+.username-box {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+
+.logo {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+
+input {
+  margin-left: 10px;
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+/* Coins grid */
+.coins {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.coin {
+  border: 1px solid #eee;
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.coin.active {
+  border: 2px solid #ff2d55;
+}
+
+.coin span {
+  display: block;
+  font-size: 14px;
+}
+
+/* Payment */
+.payment {
+  padding: 10px;
+  font-size: 12px;
+  color: gray;
+}
+
+/* Button */
+.buy-btn {
+  margin: 15px;
+  padding: 15px;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+/* Popup */
+.popup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding: 20px;
+  display: none;
+}
+
+.popup.active {
+  display: block;
+}
+
+.popup h3 {
+  margin: 0;
+}
+
+.send-btn {
+  width: 100%;
+  padding: 12px;
+  background: black;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  margin-top: 15px;
+}
+</style>
 </head>
+
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState } = React;
+<div class="app">
 
-        // Using high-res TikTok asset URLs
-        const TIKTOK_COIN = "https://p16-va.lemone8cdn.com/obj/tos-alisg-v-a3e477-sg/6990264177433247745";
-        const TIKTOK_DIAMOND = "https://p16-tiktok-va.ibyteimg.com/obj/tiktok-obj/b8e063c1a3290b200b3f8cc246797a73";
+  <div class="header">Get Coins</div>
 
-        const App = () => {
-            const [view, setView] = useState('main');
-            const [selected, setSelected] = useState(30);
-            const [customAmount, setCustomAmount] = useState('1000000');
+  <div class="username-box">
+    <div class="logo">♪</div>
+    <input type="text" placeholder="Enter username">
+  </div>
 
-            const packages = [
-                { c: 30, p: 0.31 }, { c: 350, p: 3.65 }, { c: 700, p: 7.25 },
-                { c: 1400, p: 14.49 }, { c: 3500, p: 36.20 }
-            ];
+  <div class="coins">
+    <div class="coin active" onclick="selectCoin(this,30)">
+      <span>30</span>
+      <span>$0.31</span>
+    </div>
+    <div class="coin" onclick="selectCoin(this,350)">
+      <span>350</span>
+      <span>$3.65</span>
+    </div>
+    <div class="coin" onclick="selectCoin(this,700)">
+      <span>700</span>
+      <span>$7.25</span>
+    </div>
+    <div class="coin" onclick="selectCoin(this,1400)">
+      <span>1400</span>
+      <span>$14.49</span>
+    </div>
+    <div class="coin" onclick="selectCoin(this,3500)">
+      <span>3500</span>
+      <span>$36.20</span>
+    </div>
+    <div class="coin" onclick="selectCoin(this,'custom')">
+      <span>Custom</span>
+    </div>
+  </div>
 
-            const handleKeypad = (val) => {
-                if (val === 'del') setCustomAmount(prev => prev.slice(0, -1));
-                else if (val === '000') setCustomAmount(prev => (prev + '000').slice(0, 9));
-                else if (customAmount.length < 9) setCustomAmount(prev => prev + val);
-            };
+  <div class="payment">
+    VISA • MasterCard • PayPal supported
+  </div>
 
-            const getDisplayPrice = () => {
-                if (view === 'custom') return (parseFloat(customAmount || 0) * 0.0103).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                return packages.find(x => x.c === selected)?.p.toFixed(2) || '0.00';
-            };
+  <button class="buy-btn" onclick="openPopup()">Request</button>
 
-            return (
-                <div className="max-w-[450px] mx-auto min-h-screen bg-white relative overflow-hidden shadow-2xl">
-                    {/* Header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-                        <span className="text-2xl" onClick={() => setView('main')}>✕</span>
-                        <h1 className="font-bold text-[17px]">{view === 'custom' ? 'Custom' : 'Get Coins'}</h1>
-                        <div className="flex gap-4 text-xl items-center">
-                            <span>⋯</span>
-                            <div className="w-6 h-6 rounded-full border border-gray-300"></div>
-                        </div>
-                    </div>
+</div>
 
-                    {view === 'main' ? (
-                        <div className="pb-32">
-                            {/* User Header */}
-                            <div className="p-4 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center p-2">
-                                    <svg viewBox="0 0 448 512" fill="white"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.32c7.87 33.32 31.44 60.39 63.06 75.94 11.26 5.54 23.32 8.78 35.85 9.44z"/></svg>
-                                </div>
-                                <div className="flex-1 border-b border-gray-100 pb-1">
-                                    <p className="text-gray-400 text-lg">Enter username</p>
-                                </div>
-                            </div>
+<!-- POPUP -->
+<div class="popup" id="popup">
+  <h3>Send Coins</h3>
+  <p id="selectedAmount">Coins: 30</p>
 
-                            {/* Recharge Grid */}
-                            <div className="p-4">
-                                <p className="text-gray-500 text-[13px] font-semibold mb-1">Recharge</p>
-                                <p className="text-[#FE2C55] text-[12px] mb-4">Save around 25% with a lower third-party service fee. <span className="border border-[#FE2C55] rounded-full px-1 text-[10px]">?</span></p>
-                                
-                                <div className="grid grid-cols-3 gap-2">
-                                    {packages.map(item => (
-                                        <div 
-                                            key={item.c}
-                                            onClick={() => setSelected(item.c)}
-                                            className={`p-3 rounded-lg border-[1.5px] text-center flex flex-col items-center justify-center ${selected === item.c ? 'border-[#FE2C55] bg-red-50/50' : 'border-gray-100'}`}
-                                        >
-                                            <div className="flex items-center gap-1 font-bold text-lg">
-                                                <img src={TIKTOK_COIN} className="coin-icon" /> {item.c}
-                                            </div>
-                                            <div className="text-gray-400 text-[12px]">${item.p}</div>
-                                        </div>
-                                    ))}
-                                    <div onClick={() => setView('custom')} className="p-3 rounded-lg border-[1.5px] border-gray-100 flex items-center justify-center font-bold text-gray-700">Custom</div>
-                                </div>
-                            </div>
+  <button class="send-btn">Send</button>
+</div>
 
-                            {/* Overlay Card */}
-                            <div className="fixed bottom-36 right-4 w-44 bg-[#2F2F2F] rounded-xl overflow-hidden shadow-2xl border border-white/5">
-                                <div className="bg-[#444444] text-[10px] text-white font-bold py-1.5 px-3 flex justify-between items-center">
-                                    <span></span>
-                                    <span className="bg-gray-500/50 px-2 rounded tracking-wide">Request</span>
-                                </div>
-                                <div className="p-4 flex flex-col items-center">
-                                    <div className="relative">
-                                        <img src="https://i.pravatar.cc/150?u=akron" className="w-16 h-16 rounded-full border-2 border-white/10" />
-                                        <div className="absolute -top-1 -left-2 bg-[#48C9E1] text-[10px] font-bold px-1 rounded flex items-center gap-0.5 border border-white/20 text-white">
-                                            <img src={TIKTOK_DIAMOND} className="diamond-icon" /> 42
-                                        </div>
-                                    </div>
-                                    <p className="text-white font-bold text-sm mt-2">Akron Sult...</p>
-                                </div>
-                                <div className="flex justify-end p-2 gap-2 pb-3">
-                                    <span className="bg-white/10 w-6 h-6 flex items-center justify-center rounded-full text-white text-[10px]">➕</span>
-                                    <span className="bg-white/10 w-6 h-6 flex items-center justify-center rounded-full text-white text-[10px]">🎙️</span>
-                                </div>
-                            </div>
+<script>
+let selected = 30;
 
-                            {/* Footer */}
-                            <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 max-w-[450px] mx-auto">
-                                <button className="w-full bg-[#FE2C55] text-white py-3.5 rounded font-bold text-[17px]">
-                                    Buy for ${getDisplayPrice()}
-                                </button>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="animate-slide-up flex flex-col h-full bg-white">
-                            <div className="p-6 border-b border-gray-50">
-                                <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-[13px] text-gray-500">Coin Amount</span>
-                                    <span className="text-gray-400 text-[10px]">⌄</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <img src={TIKTOK_COIN} className="w-8 h-8" />
-                                    <span className="text-4xl font-bold">{customAmount}</span>
-                                </div>
-                                <p className="text-gray-400 mt-2 font-medium">${getDisplayPrice()}</p>
-                            </div>
+function selectCoin(el, amount) {
+  document.querySelectorAll('.coin').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  selected = amount;
+}
 
-                            <div className="grid grid-cols-3 bg-gray-50 mt-auto">
-                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, '000', 0, 'del'].map((k) => (
-                                    <div key={k} onClick={() => handleKeypad(k)} className="keypad-btn">
-                                        {k === 'del' ? '⌫' : k}
-                                    </div>
-                                ))}
-                            </div>
+function openPopup() {
+  document.getElementById('popup').classList.add('active');
+  document.getElementById('selectedAmount').innerText = "Coins: " + selected;
+}
+</script>
 
-                            <div className="p-4 bg-white border-t border-gray-100">
-                                <div className="flex justify-between items-center mb-4">
-                                    <span className="font-bold">Total</span>
-                                    <span className="font-bold text-xl">${getDisplayPrice()}</span>
-                                </div>
-                                <button className="w-full bg-[#FE2C55] text-white py-4 rounded font-bold text-lg">Recharge</button>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
 </body>
 </html>
