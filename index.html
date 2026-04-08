@@ -1,206 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TikTok Coins UI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok - Get Coins</title>
+    <style>
+        :root {
+            --tt-red: #FE2C55;
+            --tt-cyan: #25F4EE;
+            --tt-black: #121212;
+            --gray-bg: #F8F8F8;
+            --border: #E8E8E8;
+        }
 
-<style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f5f5f5;
-}
+        body {
+            font-family: 'Proxima Nova', sans-serif, Arial;
+            background-color: var(--gray-bg);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
 
-/* Container */
-.app {
-  max-width: 420px;
-  margin: auto;
-  background: #fff;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
 
-/* Header */
-.header {
-  padding: 15px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 18px;
-  border-bottom: 1px solid #eee;
-}
+        /* Header & Logo */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
 
-/* Username */
-.username-box {
-  display: flex;
-  align-items: center;
-  padding: 12px;
-}
+        .tt-logo {
+            width: 32px;
+            height: 32px;
+        }
 
-.logo {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  background: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: bold;
-}
+        h2 { margin: 0; font-size: 22px; font-weight: 800; }
 
-input {
-  margin-left: 10px;
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-}
+        .username-field {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: #F1F1F2;
+            font-size: 15px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
 
-/* Coins grid */
-.coins {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  padding: 10px;
-}
+        .promo-text {
+            color: var(--tt-red);
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
 
-.coin {
-  border: 1px solid #eee;
-  padding: 12px;
-  border-radius: 12px;
-  text-align: center;
-  cursor: pointer;
-}
+        /* Coin Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
 
-.coin.active {
-  border: 2px solid #ff2d55;
-}
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-.coin span {
-  display: block;
-  font-size: 14px;
-}
+        .card:active { border-color: var(--tt-red); background: #fff5f6; }
 
-/* Payment */
-.payment {
-  padding: 10px;
-  font-size: 12px;
-  color: gray;
-}
+        .card.custom { display: flex; align-items: center; justify-content: center; font-weight: 600; color: #555; }
 
-/* Button */
-.buy-btn {
-  margin: 15px;
-  padding: 15px;
-  background: red;
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-}
+        .coin-val { font-weight: 700; font-size: 18px; margin-bottom: 4px; }
+        .price-val { color: #8a8a8a; font-size: 13px; }
 
-/* Popup */
-.popup {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: white;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  padding: 20px;
-  display: none;
-}
+        /* Custom Area */
+        #custom-panel {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+        }
 
-.popup.active {
-  display: block;
-}
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; color: #777; margin-bottom: 5px; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px; box-sizing: border-box; }
 
-.popup h3 {
-  margin: 0;
-}
+        /* Pop-up Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
 
-.send-btn {
-  width: 100%;
-  padding: 12px;
-  background: black;
-  color: white;
-  border-radius: 10px;
-  border: none;
-  margin-top: 15px;
-}
-</style>
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        /* Bottom Bar */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            background: var(--tt-red);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="app">
-
-  <div class="header">Get Coins</div>
-
-  <div class="username-box">
-    <div class="logo">♪</div>
-    <input type="text" placeholder="Enter username">
-  </div>
-
-  <div class="coins">
-    <div class="coin active" onclick="selectCoin(this,30)">
-      <span>30</span>
-      <span>$0.31</span>
+<div class="app-container">
+    <div class="header">
+        <svg class="tt-logo" viewBox="0 0 448 512">
+            <path fill="black" d="M448,209.91a210.06,210.06,0,0,1-122.77-39.25V349.38A162.55,162.55,0,1,1,185,188.31V278.2a74.62,74.62,0,1,0,52.23,71.18V0l88,0a121.18,121.18,0,0,0,1.86,22.17h0A122.18,122.18,0,0,0,381,102.39a121.43,121.43,0,0,0,67,20.14Z"/>
+        </svg>
+        <h2>Get Coins</h2>
     </div>
-    <div class="coin" onclick="selectCoin(this,350)">
-      <span>350</span>
-      <span>$3.65</span>
+
+    <input type="text" class="username-field" placeholder="Enter username">
+    <div class="promo-text">Save around 25% with a lower third-party service fee.</div>
+
+    <div class="grid">
+        <div class="card" onclick="setAmt(30, 0.31)">
+            <div class="coin-val">🪙 30</div>
+            <div class="price-val">$0.31</div>
+        </div>
+        <div class="card" onclick="setAmt(350, 3.65)">
+            <div class="coin-val">🪙 350</div>
+            <div class="price-val">$3.65</div>
+        </div>
+        <div class="card" onclick="setAmt(700, 7.25)">
+            <div class="coin-val">🪙 700</div>
+            <div class="price-val">$7.25</div>
+        </div>
+        <div class="card custom" onclick="toggleCustom()">Custom</div>
     </div>
-    <div class="coin" onclick="selectCoin(this,700)">
-      <span>700</span>
-      <span>$7.25</span>
+
+    <div id="custom-panel">
+        <div class="input-group">
+            <label>Friend's Username</label>
+            <input type="text" id="friend-user" placeholder="@username">
+        </div>
+        <div class="input-group">
+            <label>Amount of Coins</label>
+            <input type="number" id="coin-input" placeholder="0" oninput="calc()">
+        </div>
+        <button class="btn" style="width: 100%;" onclick="sendAction()">Send to Friend</button>
     </div>
-    <div class="coin" onclick="selectCoin(this,1400)">
-      <span>1400</span>
-      <span>$14.49</span>
-    </div>
-    <div class="coin" onclick="selectCoin(this,3500)">
-      <span>3500</span>
-      <span>$36.20</span>
-    </div>
-    <div class="coin" onclick="selectCoin(this,'custom')">
-      <span>Custom</span>
-    </div>
-  </div>
-
-  <div class="payment">
-    VISA • MasterCard • PayPal supported
-  </div>
-
-  <button class="buy-btn" onclick="openPopup()">Request</button>
-
-</div>
-
-<!-- POPUP -->
-<div class="popup" id="popup">
-  <h3>Send Coins</h3>
-  <p id="selectedAmount">Coins: 30</p>
-
-  <button class="send-btn">Send</button>
-</div>
-
-<script>
-let selected = 30;
-
-function selectCoin(el, amount) {
-  document.querySelectorAll('.coin').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  selected = amount;
-}
-
-function openPopup() {
-  document.getElementById('popup').classList.add('active');
-  document.getElementById('selectedAmount').innerText = "Coins: " + selected;
-}
-</script>
-
-</body>
-</html>
